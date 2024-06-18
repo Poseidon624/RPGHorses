@@ -17,6 +17,7 @@ public class DataManager {
     private final double multiplierHealth;
     private final double multiplierSpeed;
     private final double multiplierArmor;
+    private final Boolean enabled;
 
     public DataManager(FileConfiguration config) {
         buyHorseCost = config.getDouble("costs.buy");
@@ -32,6 +33,7 @@ public class DataManager {
         multiplierHealth = config.getDouble("multiplier.health");
         multiplierSpeed = config.getDouble("multiplier.speed");
         multiplierArmor = config.getDouble("multiplier.armor");
+        enabled = config.getBoolean("costs.enable");
     }
 
 
@@ -86,4 +88,9 @@ public class DataManager {
     public double getMultiplierArmor() {
         return multiplierArmor;
     }
+
+    public Boolean isEnabled() {
+        return enabled;
+    }
+
 }

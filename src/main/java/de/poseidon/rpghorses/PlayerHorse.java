@@ -1,5 +1,6 @@
 package de.poseidon.rpghorses;
 
+import de.poseidon.rpghorses.api.ItemBuilder;
 import de.poseidon.rpghorses.api.YesNoMenu;
 import de.poseidon.rpghorses.data.HorseDataType;
 import de.poseidon.rpghorses.data.PlayerDataType;
@@ -15,7 +16,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Objects;
@@ -28,6 +28,7 @@ public class PlayerHorse {
     public static final NamespacedKey DEADKEY = new NamespacedKey(RPGHorses.getPlugin(), "Dead");
     public static final NamespacedKey PLAYERKEY = new NamespacedKey(RPGHorses.getPlugin(), "Player");
     public static final NamespacedKey PREFERENCEKEY = new NamespacedKey(RPGHorses.getPlugin(), "Preference");
+    public static final NamespacedKey SADDLEKEY = new NamespacedKey(RPGHorses.getPlugin(), "Saddle");
 
     private final Player player;
     private Entity horse;
@@ -56,7 +57,7 @@ public class PlayerHorse {
         }
         if (player.getPersistentDataContainer().getOrDefault(BUYKEY, PersistentDataType.BOOLEAN, false) && !player.getPersistentDataContainer().getOrDefault(DEADKEY, PersistentDataType.BOOLEAN, false)) {
             Entity entit = player.getPersistentDataContainer().getOrDefault(PREFERENCEKEY, new PreferenceDataType(), RPGHorses.getPlugin().getStandartHorsePreference()).spawn(player.getLocation(), horse1 -> {
-                horse1.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+                horse1.getInventory().setSaddle(new ItemBuilder(Material.SADDLE).changeItemMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(SADDLEKEY, PersistentDataType.BOOLEAN, true)).build());
                 horse1.setOwner(player);
                 horse1.getPersistentDataContainer().set(PLAYERKEY, new PlayerDataType(), player);
                 horse1.customName(Component.text(player.getName() + "'s Horse"));
@@ -66,9 +67,13 @@ public class PlayerHorse {
             return;
         }
         player.openInventory(new YesNoMenu<>(RPGHorses.getPlugin(), "Willst du ein neues Pferd kaufen?", inventoryClickEvent -> {
+            boolean success = RPGHorses.getPlugin().getManager().isEnabled();
             double cost = RPGHorses.getPlugin().getManager().getBuyHorseCost();
-            EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer(player, cost);
-            if (response.transactionSuccess()) {
+            if(!success){
+                EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer(player, cost);
+                success = response.transactionSuccess();
+            }
+            if (success) {
                 inventoryClickEvent.getWhoClicked().getPersistentDataContainer().set(BUYKEY, PersistentDataType.BOOLEAN, true);
                 player.getPersistentDataContainer().set(DEADKEY, PersistentDataType.BOOLEAN, false);
                 player.getPersistentDataContainer().set(PREFERENCEKEY, new PreferenceDataType(), RPGHorses.getPlugin().getStandartHorsePreference());
@@ -96,8 +101,12 @@ public class PlayerHorse {
         if (player.getPersistentDataContainer().getOrDefault(DEADKEY, PersistentDataType.BOOLEAN, false)) {
             player.openInventory(new YesNoMenu<>(RPGHorses.getPlugin(), "Willst du dein Pferd reviven?", inventoryClickEvent -> {
                 double cost = RPGHorses.getPlugin().getManager().getReviveHorseCost();
-                EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer(player, cost);
-                if (response.transactionSuccess()) {
+                boolean success = RPGHorses.getPlugin().getManager().isEnabled();
+                if(!success){
+                    EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer(player, cost);
+                    success = response.transactionSuccess();
+                }
+                if (success) {
                     inventoryClickEvent.getWhoClicked().getPersistentDataContainer().set(DEADKEY, PersistentDataType.BOOLEAN, false);
                     this.spawn();
                 } else {

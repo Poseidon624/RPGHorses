@@ -60,7 +60,7 @@ public final class RPGHorses extends JavaPlugin {
         int armor = getConfig().getInt("standard.horse.armor");
         standartHorsePreference = new PlayerHorse.HorsePreference(style, color, health, speed, armor);
 
-        if (!setupEconomy()) {
+        if (!setupEconomy() && getConfig().getBoolean("costs.enable")) {
             getLogger().severe("Vault not found or economy/permissions plugin not hooked!");
             getServer().getPluginManager().disablePlugin(this);
             return;
@@ -90,6 +90,7 @@ public final class RPGHorses extends JavaPlugin {
         config.addDefault("costs.upgrade.health", 500);
         config.addDefault("costs.upgrade.speed", 500);
         config.addDefault("costs.upgrade.armor", 500);
+        config.addDefault("costs.enable", false);
         config.addDefault("max.level.health", 40);
         config.addDefault("max.level.speed", 40);
         config.addDefault("max.level.armor", 40);

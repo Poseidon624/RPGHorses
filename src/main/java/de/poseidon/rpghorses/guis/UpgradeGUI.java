@@ -42,8 +42,12 @@ public class UpgradeGUI extends MenuHolder<RPGHorses> {
             @Override
             public void onClick(UpgradeGUI holder, InventoryClickEvent event) {
                 double cost = RPGHorses.getPlugin().getManager().getUpgradeHealthCost();
-                EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer((OfflinePlayer) event.getWhoClicked(), cost);
-                if (response.transactionSuccess()) {
+                boolean success = !RPGHorses.getPlugin().getManager().isEnabled();
+                if(!success){
+                    EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer((OfflinePlayer) event.getWhoClicked(), cost);
+                    success = response.transactionSuccess();
+                }
+                if (success) {
                     PlayerHorse playerHorse = new PlayerHorse((Player) event.getWhoClicked());
                     playerHorse.editPreference(horsePreference -> {
                         if (horsePreference.getBaseHealth() >= RPGHorses.getPlugin().getManager().getMaxLevelHealth()) {
@@ -62,8 +66,12 @@ public class UpgradeGUI extends MenuHolder<RPGHorses> {
             @Override
             public void onClick(UpgradeGUI holder, InventoryClickEvent event) {
                 double cost = RPGHorses.getPlugin().getManager().getUpgradeSpeedCost();
-                EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer((OfflinePlayer) event.getWhoClicked(), cost);
-                if (response.transactionSuccess()) {
+                boolean success = !RPGHorses.getPlugin().getManager().isEnabled();
+                if(!success){
+                    EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer((OfflinePlayer) event.getWhoClicked(), cost);
+                    success = response.transactionSuccess();
+                }
+                if (success) {
                     PlayerHorse playerHorse = new PlayerHorse((Player) event.getWhoClicked());
                     playerHorse.editPreference(horsePreference -> {
                         if (horsePreference.getBaseSpeed() >= RPGHorses.getPlugin().getManager().getMaxLevelSpeed()) {
@@ -82,8 +90,12 @@ public class UpgradeGUI extends MenuHolder<RPGHorses> {
             @Override
             public void onClick(UpgradeGUI holder, InventoryClickEvent event) {
                 double cost = RPGHorses.getPlugin().getManager().getUpgradeArmorCost();
-                EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer((OfflinePlayer) event.getWhoClicked(), cost);
-                if (response.transactionSuccess()) {
+                boolean success = !RPGHorses.getPlugin().getManager().isEnabled();
+                if(!success){
+                    EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer((OfflinePlayer) event.getWhoClicked(), cost);
+                    success = response.transactionSuccess();
+                }
+                if (success) {
 
                     PlayerHorse playerHorse = new PlayerHorse((Player) event.getWhoClicked());
                     playerHorse.editPreference(horsePreference -> {
@@ -104,9 +116,12 @@ public class UpgradeGUI extends MenuHolder<RPGHorses> {
             public void onClick(UpgradeGUI holder, InventoryClickEvent event) {
                 event.getWhoClicked().openInventory(new ChooseMenu(Arrays.stream(Horse.Color.values()).map(Enum::name).toList(), s -> {
                     double cost = RPGHorses.getPlugin().getManager().getChangeColorCost();
-                    EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer((OfflinePlayer) event.getWhoClicked(), cost);
-                    if (response.transactionSuccess()) {
-
+                    boolean success = !RPGHorses.getPlugin().getManager().isEnabled();
+                    if(!success){
+                        EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer((OfflinePlayer) event.getWhoClicked(), cost);
+                        success = response.transactionSuccess();
+                    }
+                    if (success) {
                         Horse.Color color = Horse.Color.valueOf(s);
                         new PlayerHorse((Player) event.getWhoClicked()).editPreference(preference1 -> preference1.setColor(color));
                     } else {
@@ -122,9 +137,12 @@ public class UpgradeGUI extends MenuHolder<RPGHorses> {
             public void onClick(UpgradeGUI holder, InventoryClickEvent event) {
                 event.getWhoClicked().openInventory(new ChooseMenu(Arrays.stream(Horse.Style.values()).map(Enum::name).toList(), s -> {
                     double cost = RPGHorses.getPlugin().getManager().getChangeStylCost();
-                    EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer((OfflinePlayer) event.getWhoClicked(), cost);
-
-                    if (response.transactionSuccess()) {
+                    boolean success = !RPGHorses.getPlugin().getManager().isEnabled();
+                    if(!success){
+                        EconomyResponse response = RPGHorses.getPlugin().getEconomy().withdrawPlayer((OfflinePlayer) event.getWhoClicked(), cost);
+                        success = response.transactionSuccess();
+                    }
+                    if (success) {
                         Horse.Style style = Horse.Style.valueOf(s);
                         new PlayerHorse((Player) event.getWhoClicked()).editPreference(preference1 -> preference1.setStyle(style));
                     } else {
